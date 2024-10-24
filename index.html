@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>あなたはロボットですか？</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+            padding: 10px 20px;
+        }
+        .header h1 {
+            font-size: 40px;
+            margin: 0;
+        }
+        .header .subtext {
+            font-size: 14px;
+            margin: 5px 0 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .image-grid img {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* 正方形を維持 */
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+        .image-grid img.selected {
+            border-color: #007bff;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .confirm-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .confirm-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>石城真</h1>
+        <div class="subtext">の画像をすべて選択してください</div>
+    </div>
+    <div class="image-grid" id="imageGrid"></div>
+    <button class="confirm-btn" onclick="checkSelection()">確認</button>
+    <div class="message" id="message"></div>
+
+    <script>
+        const correctImages = ['image8.jpg', 'image9.jpg'];
+        const allImages = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg', 'image6.jpg', 'image7.jpg', 'image8.jpg', 'image9.jpg'];
+        const imageGrid = document.getElementById('imageGrid');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createImageGrid() {
+            const shuffledImages = shuffle([...allImages]);
+            shuffledImages.forEach(imageName => {
+                const img = document.createElement('img');
+                img.src = imageName;
+                img.alt = imageName;
+                img.addEventListener('click', () => toggleSelection(img));
+                imageGrid.appendChild(img);
+            });
+        }
+
+        function toggleSelection(img) {
+            img.classList.toggle('selected');
+        }
+
+        function checkSelection() {
+            const selectedImages = Array.from(document.querySelectorAll('.image-grid img.selected')).map(img => img.alt);
+            const isCorrect = selectedImages.length === correctImages.length &&
+                selectedImages.every(img => correctImages.includes(img));
+            
+            const message = document.getElementById('message');
+            if (isCorrect) {
+                message.textContent = "あなたはロボットではありません";
+                message.style.color = "green";
+            } else {
+                message.textContent = "あなたはロボットです";
+                message.style.color = "red";
+            }
+        }
+
+        // ページロード時に画像グリッドを作成
+        createImageGrid();
+    </script>
+</body>
+</html>
