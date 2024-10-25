@@ -33,7 +33,7 @@
         }
         .image-grid img {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 1 / 1; /* 正方形を維持 */
             object-fit: cover;
             cursor: pointer;
             border: 2px solid transparent;
@@ -42,7 +42,7 @@
         .image-grid img.selected {
             border-color: #007bff;
         }
-        .message {
+        .message, .success-count, .time {
             margin-top: 20px;
             font-size: 18px;
             color: #333;
@@ -69,11 +69,16 @@
     <div class="image-grid" id="imageGrid"></div>
     <button class="confirm-btn" onclick="checkSelection()">確認</button>
     <div class="message" id="message"></div>
+    <div class="success-count" id="successCount">成功回数: 0</div>
+    <div class="time" id="time"></div>
 
     <script>
         const correctImages = ['image8.jpg', 'image9.jpg'];
         const allImages = ['image1.jpg', 'image2.jpg', 'image3.jpg', 'image4.jpg', 'image5.jpg', 'image6.jpg', 'image7.jpg', 'image8.jpg', 'image9.jpg'];
         const imageGrid = document.getElementById('imageGrid');
+        let successCount = 0;
+        let startTime;
+        let timerRunning = false;
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -106,12 +111,35 @@
             
             const message = document.getElementById('message');
             if (isCorrect) {
+                successCount++;
                 message.textContent = "ぎりあなたは人間です。";
                 message.style.color = "green";
+                
+                // タイマー開始
+                if (!timerRunning) {
+                    startTime = new Date();
+                    timerRunning = true;
+                }
+
+                // 成功回数が20に達した場合
+                if (successCount === 10) {
+                    const endTime = new Date();
+                    const elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+                    document.getElementById('time').textContent = `10回成功にかかった時間: ${elapsedTime}秒`;
+                    // リセット
+                    successCount = 0;
+                    timerRunning = false;
+                }
             } else {
                 message.textContent = "あなたは人間ではありません。";
                 message.style.color = "red";
+                successCount = 0; // 失敗したらカウントリセット
+                timerRunning = false; // タイマーリセット
+                document.getElementById('time').textContent = ''; // タイム表示をクリア
             }
+
+            // 成功回数を表示
+            document.getElementById('successCount').textContent = `成功回数: ${successCount}`;
 
             // 画像の位置をランダムに変更
             createImageGrid();
