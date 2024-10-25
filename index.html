@@ -33,7 +33,7 @@
         }
         .image-grid img {
             width: 100%;
-            aspect-ratio: 1 / 1; /* 正方形を維持 */
+            aspect-ratio: 1 / 1;
             object-fit: cover;
             cursor: pointer;
             border: 2px solid transparent;
@@ -84,6 +84,7 @@
         }
 
         function createImageGrid() {
+            imageGrid.innerHTML = ''; // 既存の画像をクリア
             const shuffledImages = shuffle([...allImages]);
             shuffledImages.forEach(imageName => {
                 const img = document.createElement('img');
@@ -111,6 +112,9 @@
                 message.textContent = "あなたは人間ではありません。";
                 message.style.color = "red";
             }
+
+            // 画像の位置をランダムに変更
+            createImageGrid();
         }
 
         // ページロード時に画像グリッドを作成
